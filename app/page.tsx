@@ -1,12 +1,16 @@
 import { createClient } from "./lib/supabase/server-client";
 import LoginPage from "./Auth/login/page";
+import SignupPage from "./Auth/signup/page";
 
 export default async function Home() {
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();
 
   return !user ? (
+    <>
     <LoginPage />
+    <SignupPage />
+    </>
   ) : (
     <div>
       <p style={{ color: "green" }}>Logged in as: {user.email}</p>

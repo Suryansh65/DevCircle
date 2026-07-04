@@ -50,7 +50,7 @@ export default function LoginPage() {
           {/* Email */}
           <div>
             <label className="text-sm text-[#8B8FA8] mb-1 block">Email</label>
-            <Input
+            <input
               id="email"
               type="email"
               placeholder="you@example.com"
@@ -64,7 +64,7 @@ export default function LoginPage() {
             <label className="text-sm text-[#8B8FA8] mb-1 block">
               Password
             </label>
-            <Input
+            <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -74,16 +74,21 @@ export default function LoginPage() {
           </div>
 
           {/* Login button */}
-          {/* className="{w-full bg=[#1d9e75] hover:bg-[#17876A] text-white font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed}" */}
           <Button
-            size="xs"
-            variant="outline"
             onClick={handleLogin}
             disabled={loading}
-            className="outline-none border-[#2A2D3A] p-4 rounded-lg hover:bg-[#2A2D3A]"
+            className="w-full bg-[#1D9E75] hover:bg-[#17876A] text-white
+                       font-medium py-2.5 h-auto rounded-lg transition-colors
+                       disabled:opacity-50 disabled:cursor-not-allowed gap-2"
           >
-           <LogIn /> {loading ? "Signing in..." : "Sign in"}
+            <LogIn /> {loading ? "Signing in..." : "Sign in"}
           </Button>
+             <p className="text-center text-sm text-[#8B8FA8]">
+            Don&apos;t have an account?{" "}
+            <a href="/Auth/signup" className="text-[#1D9E75] hover:underline">
+              Sign up
+            </a>
+          </p>
         </div>
       </div>
     </div>
