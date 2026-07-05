@@ -9,7 +9,7 @@ export default async function Home() {
   return !user ? (
     <>
     <LoginPage />
-    <SignupPage />
+    {/* <SignupPage /> */}
     </>
   ) : (
     <div>
