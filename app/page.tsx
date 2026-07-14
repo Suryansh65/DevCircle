@@ -1,6 +1,7 @@
 import { createClient } from "./lib/supabase/server-client";
 import LoginPage from "./Auth/login/page";
 import SignupPage from "./Auth/signup/page";
+import FeedPage from "./feed/page";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -12,10 +13,11 @@ export default async function Home() {
     {/* <SignupPage /> */}
     </>
   ) : (
-    <div>
-      <p style={{ color: "green" }}>Logged in as: {user.email}</p>
-      <p>User ID: {user.id}</p>
-    </div>
+    <FeedPage />
+    // <div>
+    //   <p style={{ color: "green" }}>Logged in as: {user.email}</p>
+    //   <p>User ID: {user.id}</p>
+    // </div>
   );
 }
 
