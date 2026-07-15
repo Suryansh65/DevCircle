@@ -22,10 +22,21 @@ export default function PostCard({post}: {post: Post}){
                 </div>
                 <div>
                     <h2 className="text-white font-bold">{post.author.name}</h2>
-                    <p className="text-[#8B8FA8] text-sm">@{post.author.username}</p>
+                    <p className="text-[#8B8FA8] text-sm">
+                        @{post.author.username} · {new Date(post.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </p>
                 </div>
             </div>
             <p className="text-white mb-4">{post.content}</p>
+            {post.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                    {post.tags.map((tag) => (
+                        <span key={tag} className="text-[#8B8FA8] bg-[#2A2D3A] text-xs px-2 py-1 rounded-full">
+                            #{tag}
+                        </span>
+                    ))}
+                </div>
+            )}
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                     <button className="text-[#8B8FA8] hover:text-white">
