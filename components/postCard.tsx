@@ -1,3 +1,4 @@
+import LikeButton from "./ui/Likebutton";
 
 type Post = {
     id: number;
@@ -14,7 +15,7 @@ type Post = {
     content: string;
 }
 
-export default function PostCard({post}: {post: Post}){
+export default function PostCard({post, userId}: {post: Post; userId: string}){
     return(
         <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-6 mb-4 w-full max-w-2xl m-auto">
             <div className="flex items-center mb-4">
@@ -40,12 +41,12 @@ export default function PostCard({post}: {post: Post}){
             )}
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                    <button className={post.is_liked ? "text-red-500" : "text-[#8B8FA8] hover:text-white"}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 015.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                        </svg>
-                    </button>
-                    <span className="text-[#8B8FA8]">{post.likes_count}</span>
+                    <LikeButton
+                        postId={post.id.toString()}
+                        userId={userId}
+                        initialIsLiked={post.is_liked}
+                        initialLikesCount={post.likes_count}
+                    />
                 </div>
                 <div className="flex items-center space-x-4">
                     <button className="text-[#8B8FA8] hover:text-white">

@@ -37,7 +37,7 @@ export default function FeedList({initialPosts, currentUser}: FeedClientProps){
         <div className="min-h-screen bg-[#0F1117] p-8">
             <CreatePost currentUser={currentUser} onPostCreated={handlePostCreated} />
             {posts?.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post.id} post={post} userId={currentUser.id} />
             ))}
         </div>
     )
