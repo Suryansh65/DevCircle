@@ -9,21 +9,22 @@ type CurrentUser = {
     name:string;
     username:string;
 };
-type FeedClientProps = {
-    initialPosts: Post[];
-    currentUser: CurrentUser;
-}
-
 type Post = {
     id: number;
     user_id: string;
     likes_count: number;
+    is_liked: boolean;
     tags: string[];
     author: {name:string, username:string};
     comments_count: number;
     created_at: string;
     content: string;
 }
+type FeedClientProps = {
+    initialPosts: Post[];
+    currentUser: CurrentUser;
+}
+
 
 export default function FeedList({initialPosts, currentUser}: FeedClientProps){
     // function to handle posts

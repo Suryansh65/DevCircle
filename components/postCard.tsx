@@ -3,6 +3,7 @@ type Post = {
     id: number;
     user_id: string;
     likes_count: number;
+    is_liked: boolean;
     tags: string[];
     author: {
         name: string;
@@ -39,7 +40,7 @@ export default function PostCard({post}: {post: Post}){
             )}
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                    <button className="text-[#8B8FA8] hover:text-white">
+                    <button className={post.is_liked ? "text-red-500" : "text-[#8B8FA8] hover:text-white"}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 015.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                         </svg>

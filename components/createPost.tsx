@@ -18,6 +18,7 @@ type Post = {
     id: number;
     user_id: string;
     likes_count: number;
+    is_liked: boolean;
     tags: string[];
     author: {name:string, username:string};
     comments_count: number;
@@ -74,7 +75,8 @@ export default function CreatePost({currentUser,onPostCreated}: CreatePostProps)
             author: {
                 name: currentUser.name,
                 username: currentUser.username,
-            }
+            },
+            is_liked: false
         }
         onPostCreated(newPost);
         // reset form
@@ -129,9 +131,9 @@ export default function CreatePost({currentUser,onPostCreated}: CreatePostProps)
                 <div className="w-10 h-10 shrink-0 bg-[#2A2D3A] rounded-full flex items-center justify-center text-white font-bold">
                     {currentUser.name.charAt(0)}
                 </div>
-                <span className="flex-1 flex items-center justify-between rounded-full bg-[#0F1117] border border-[#2A2D3A] px-4 py-2.5 text-sm text-[#8B8FA8]">
+                <span className="flex-1 flex items-center justify-between rounded-full bg-[#0F1117] border border-[#2A2D3A] px-4 py-2.5 text-sm text-[#8B8FA8] ">
                     Create new post
-                    <Plus className="w-4 h-4 text-[#1D9E75]" />
+                    <Plus className="cursor-pointer w-4 h-4 text-[#1D9E75] " />
                 </span>
             </button>
 
