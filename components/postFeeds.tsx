@@ -8,6 +8,7 @@ type CurrentUser = {
     id:string;
     name:string;
     username:string;
+    avatarUrl?: string;
 };
 type Post = {
     id: number;
@@ -37,7 +38,7 @@ export default function FeedList({initialPosts, currentUser}: FeedClientProps){
         <div className="min-h-screen bg-[#0F1117] p-8">
             <CreatePost currentUser={currentUser} onPostCreated={handlePostCreated} />
             {posts?.map((post) => (
-                <PostCard key={post.id} post={post} userId={currentUser.id} />
+                <PostCard key={post.id} post={post} user={currentUser} />
             ))}
         </div>
     )

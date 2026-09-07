@@ -1,4 +1,8 @@
+"use client";
+
 import LikeButton from "./ui/Likebutton";
+import {useState} from "react";
+import CommentSection from "./ui/commentSection";
 
 type Post = {
     id: number;
@@ -14,8 +18,15 @@ type Post = {
     created_at: string;
     content: string;
 }
+type CurrentUser = {
+    id: string;
+    name: string;
+    username: string;
+    avatarUrl?: string;
+}
 
-export default function PostCard({post, userId}: {post: Post; userId: string}){
+export default function PostCard({post, user}: {post: Post; user: CurrentUser}){
+    const [showComments, setShowComments] = useState(false);
     return(
         <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-6 mb-4 w-full max-w-2xl m-auto">
             <div className="flex items-center mb-4">
@@ -39,17 +50,21 @@ export default function PostCard({post, userId}: {post: Post; userId: string}){
                     ))}
                 </div>
             )}
+            {/* Action buttons */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                     <LikeButton
                         postId={post.id.toString()}
-                        userId={userId}
+                        userId={user.id}
                         initialIsLiked={post.is_liked}
                         initialLikesCount={post.likes_count}
                     />
                 </div>
                 <div className="flex items-center space-x-4">
-                    <button className="text-[#8B8FA8] hover:text-white">
+                    <button 
+                        className="text-[#8B8FA8] hover:text-white"
+                        onClick={() => setShowComments(!showComments)}
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 5v-5H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 7h.01V7H7zm3.999-.999c-.999-.999-3.999-.999-3.999-.999s3 .999 3.999.999zm3.001 1.999h-.01V7H14z" clipRule="evenodd" />
                         </svg>
@@ -57,6 +72,9 @@ export default function PostCard({post, userId}: {post: Post; userId: string}){
                     <span className="text-[#8B8FA8]">{post.comments_count}</span>
                 </div>
             </div>
+            {showComments && (
+                <CommentSection postId={post.id.toString()} currentUser={user}/>
+            )}
         </div>
     )
 }

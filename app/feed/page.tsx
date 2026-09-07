@@ -36,6 +36,11 @@ export default async function FeedPage() {
     );
   }
 
+  const currentUserWithAvatar = {
+    ...currentUser,
+    avatarUrl: user.user_metadata?.avatar_url ?? user.user_metadata?.picture ?? "",
+  };
+
   // Method to fetch all posts from the database
   const { data: posts, error: postError } = await supabase
     .from("posts")
@@ -76,7 +81,7 @@ export default async function FeedPage() {
 
   return (
     <div className="min-h-screen bg-[#0F1117] p-8">
-      <FeedList initialPosts={transformedPosts} currentUser={currentUser} />
+      <FeedList initialPosts={transformedPosts} currentUser={currentUserWithAvatar} />
     </div>
   );
 }
