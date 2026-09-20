@@ -87,7 +87,7 @@ export default function PostCard({post, user, onCommentsCountChange,}: PostCardP
                 </div>
             </div>
             {showComments && (
-                <CommentSection postId={post.id.toString()} currentUser={user} onCommentsCountChange = {handleCommentsCountChange}/>
+                <CommentSection postId={post.id.toString()} currentUser={user} postAuthorId={post.user_id} onCommentsCountChange = {handleCommentsCountChange}/>
             )}
         </div>
     )

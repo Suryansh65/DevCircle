@@ -2,7 +2,23 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { createSupabaseClient } from "@/app/lib/supabase/client";
-import { Send } from "lucide-react";
+import { MoreHorizontal, Send, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./alert-dialog";
 
 type CurrentUser = {
   id: string;
@@ -24,12 +40,14 @@ type Comment = {
 type CommentSectionProps = {
   postId: string;
   currentUser: CurrentUser;
-  onCommentsCountChange: (count:number)=>void;
+  postAuthorId: string;
+  onCommentsCountChange: (count: number) => void;
 };
 
 export default function CommentSection({
   postId,
   currentUser,
+  postAuthorId,
   onCommentsCountChange,
 }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
@@ -41,10 +59,12 @@ export default function CommentSection({
   const [replyFocused, setReplyFocused] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const supabase = useMemo(()=> createSupabaseClient(),[]);
+  const supabase = useMemo(() => createSupabaseClient(), []);
 
-  useEffect(()=>{
+  useEffect(() => {
     onCommentsCountChange(comments.length);
   }, [comments.length, onCommentsCountChange]);
 
@@ -101,6 +121,7 @@ export default function CommentSection({
     setSubmitting(false);
   }
 
+  // Handle reply submit
   async function handleReplySubmit(
     e: React.SubmitEvent<HTMLFormElement>,
     parentId: number,
@@ -137,6 +158,25 @@ export default function CommentSection({
       setReplyFocused(false);
     }
     setSubmitting(false);
+  }
+
+  // Handle delete comment
+  async function handleDeleteComment() {
+    if (!commentToDelete) return;
+    setDeleting(true);
+
+    const { error } = await supabase
+      .from("comments")
+      .delete()
+      .eq("id", commentToDelete);
+
+    if (!error) {
+      setComments((prev) => prev.filter((c) => c.id != commentToDelete));
+    } else {
+      setError("Failed to delete comment");
+    }
+    setDeleting(false);
+    setCommentToDelete(null);
   }
 
   return (
@@ -219,9 +259,32 @@ export default function CommentSection({
                     </span>
                   </div>
                 </div>
-                <time className="text-xs text-slate-500">
-                  {new Date(comment.created_at).toLocaleDateString()}
-                </time>
+                <div className="flex items-center gap-3">
+                  <time className="text-xs text-slate-500">
+                    {new Date(comment.created_at).toLocaleDateString()}
+                  </time>
+                  {/* 3 dots with dropdown options */}
+                  {(comment.user_id === currentUser.id ||
+                    postAuthorId === currentUser.id) && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        className="rounded-md p-1 text-slate-500 hover:bg-[#242D3A] hover:text-white"
+                        aria-label="Comment options"
+                      >
+                        <MoreHorizontal className="size-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          className="text-red-400 focus:text-red-400"
+                          onClick={() => setCommentToDelete(comment.id)}
+                        >
+                          <Trash2 className="mr-2 size-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
               </div>
               {/* Comment Content */}
               <p className="mt-2 ms-11 whitespace-pre-wrap text-sm text-slate-300">
@@ -261,7 +324,9 @@ export default function CommentSection({
                   onSubmit={(event) => handleReplySubmit(event, comment.id)}
                   onFocus={() => setReplyFocused(true)}
                   onBlur={(event) => {
-                    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                    if (
+                      !event.currentTarget.contains(event.relatedTarget as Node)
+                    ) {
                       setReplyFocused(false);
                     }
                   }}
@@ -297,6 +362,37 @@ export default function CommentSection({
           ))}
         </ul>
       )}
+
+      {/* Confirmation dialog */}
+      <AlertDialog
+        open={commentToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open && !deleting) {
+            setCommentToDelete(null);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this comment?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+
+            <AlertDialogAction
+              disabled={deleting}
+              onClick={handleDeleteComment}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {deleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   );
 }
