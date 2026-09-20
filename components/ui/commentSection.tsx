@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createSupabaseClient } from "@/app/lib/supabase/client";
 import { Send } from "lucide-react";
 
@@ -24,11 +24,13 @@ type Comment = {
 type CommentSectionProps = {
   postId: string;
   currentUser: CurrentUser;
+  onCommentsCountChange: (count:number)=>void;
 };
 
 export default function CommentSection({
   postId,
   currentUser,
+  onCommentsCountChange,
 }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +42,11 @@ export default function CommentSection({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const supabase = createSupabaseClient();
+  const supabase = useMemo(()=> createSupabaseClient(),[]);
+
+  useEffect(()=>{
+    onCommentsCountChange(comments.length);
+  }, [comments.length, onCommentsCountChange]);
 
   useEffect(() => {
     // Fetch comments for this postId
@@ -60,7 +66,7 @@ export default function CommentSection({
       setLoading(false);
     };
     fetchComments();
-  }, [postId]);
+  }, [postId, supabase]);
 
   // Handle new comment submission
   async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {

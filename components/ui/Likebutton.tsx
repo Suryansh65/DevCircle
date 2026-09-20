@@ -54,7 +54,7 @@ export default function LikeButton({postId, userId, initialIsLiked, initialLikes
         <button
         onClick={handleLike}
         disabled={loading}
-        className={`flex items-center gap-2 text-sm transition-colors disabled:opacity-50 ${isLiked ? "text-red-500" : "text-[#8B8FA8] hover:text-white"}`}
+        className={`flex items-center gap-2 text-sm transition-colors cursor-pointer disabled:opacity-50 ${isLiked ? "text-red-500" : "text-[#8B8FA8] hover:text-white"}`}
         >
             <Heart className="h-5 w-5" fill={isLiked ? "currentColor" : "none"} />
             <span>{likesCount}</span>

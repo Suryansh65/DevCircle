@@ -1,7 +1,7 @@
 "use client";
 
 import LikeButton from "./ui/Likebutton";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import CommentSection from "./ui/commentSection";
 
 type Post = {
@@ -25,8 +25,22 @@ type CurrentUser = {
     avatarUrl?: string;
 }
 
-export default function PostCard({post, user}: {post: Post; user: CurrentUser}){
+// type for commentCountChange prop
+type PostCardProps = {
+    post: Post;
+    user: CurrentUser;
+    onCommentsCountChange: (postId: number, commentsCount: number) => void;
+}
+
+export default function PostCard({post, user, onCommentsCountChange,}: PostCardProps){
     const [showComments, setShowComments] = useState(false);
+
+    const handleCommentsCountChange = useCallback(
+        (count:number)=>{
+            onCommentsCountChange(post.id,count);
+        },
+        [onCommentsCountChange, post.id]
+    );
     return(
         <div className="bg-[#1A1D27] border border-[#2A2D3A] rounded-xl p-6 mb-4 w-full max-w-2xl m-auto">
             <div className="flex items-center mb-4">
@@ -60,9 +74,9 @@ export default function PostCard({post, user}: {post: Post; user: CurrentUser}){
                         initialLikesCount={post.likes_count}
                     />
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 cursor-pointer">
                     <button 
-                        className="text-[#8B8FA8] hover:text-white"
+                        className="text-[#8B8FA8] hover:text-white cursor-pointer"
                         onClick={() => setShowComments(!showComments)}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -73,7 +87,7 @@ export default function PostCard({post, user}: {post: Post; user: CurrentUser}){
                 </div>
             </div>
             {showComments && (
-                <CommentSection postId={post.id.toString()} currentUser={user}/>
+                <CommentSection postId={post.id.toString()} currentUser={user} onCommentsCountChange = {handleCommentsCountChange}/>
             )}
         </div>
     )
