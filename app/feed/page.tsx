@@ -1,9 +1,8 @@
 // Protected Route
-import PostCard from "../../components/postCard";
 import { createClient } from "../lib/supabase/server-client";
 import { redirect } from "next/navigation";
-import CreatePost from "../../components/createPost";
 import FeedList from "../../components/postFeeds";
+import SignOutButton from "../../components/SignOutButton";
 
 export default async function FeedPage() {
   const supabase = await createClient();
@@ -48,6 +47,7 @@ export default async function FeedPage() {
       `
         *,
         author: users!posts_user_id_fkey(
+        id,
         name,
         username
         ),
@@ -81,6 +81,9 @@ export default async function FeedPage() {
 
   return (
     <div className="min-h-screen bg-[#0F1117] p-8">
+      <div className="mx-auto mb-6 flex w-full max-w-2xl justify-end">
+        <SignOutButton />
+      </div>
       <FeedList initialPosts={transformedPosts} currentUser={currentUserWithAvatar} />
     </div>
   );
